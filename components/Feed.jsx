@@ -24,6 +24,10 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+  
   const handleTagClick = async (tag) => {
     try {
       console.log("test")
@@ -64,9 +68,7 @@ const Feed = () => {
     }
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
+
 
   return (
     <section className="feed">
