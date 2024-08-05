@@ -5,6 +5,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Form from "@components/Form";
 
 const EditPrompt = () => {
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <EditPromptContent />
+    </Suspense>
+  );
+};
+
+const EditPromptContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
@@ -57,15 +65,13 @@ const EditPrompt = () => {
   };
 
   return (
-    <Suspense fallback={<p>Loading...</p>}>
-      <Form
-        type="Edit"
-        post={post}
-        setPost={setPost}
-        submitting={submitting}
-        handleSubmit={editPrompt}
-      />
-    </Suspense>
+    <Form
+      type="Edit"
+      post={post}
+      setPost={setPost}
+      submitting={submitting}
+      handleSubmit={editPrompt}
+    />
   );
 };
 
