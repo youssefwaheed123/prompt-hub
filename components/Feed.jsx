@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import PropmtCard from "./PropmtCard";
 
 const PropmtCardList = ({ data, handleTagClick }) => {
@@ -21,9 +21,24 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
+  const fetchPosts = useCallback(async (query = "") => {
+    try {
+      let response;
+      if (query.trim() === '') {
+        response = await fetch('/api/prompt');
+      } else {
+        response = await fetch(`/api/prompt/filter/${query}`);
+      }
+      const data = await response.json();
+      setPosts(data);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+    }
+  }, []);
+
   useEffect(() => {
     fetchPosts(searchText);
-  }, [searchText]);
+  }, [searchText, fetchPosts]);
 
   const handleTagClick = async (tag) => {
     try {
@@ -37,23 +52,7 @@ const Feed = () => {
 
   const handleSearchChange = (e) => {
     e.preventDefault();
-    const text = e.target.value;
-    setSearchText(text);
-  };
-
-  const fetchPosts = async (query = "") => {
-    try {
-      let response;
-      if (query.trim() === '') {
-        response = await fetch('/api/prompt');
-      } else {
-        response = await fetch(`/api/prompt/filter/${query}`);
-      }
-      const data = await response.json();
-      setPosts(data);
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-    }
+    setSearchText(e.target.value);
   };
 
   return (
