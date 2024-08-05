@@ -1,8 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import PropmtCard from "./PropmtCard";
-
 
 const PropmtCardList = ({ data, handleTagClick }) => {
   return (
@@ -18,19 +17,16 @@ const PropmtCardList = ({ data, handleTagClick }) => {
   )
 }
 
-
 const Feed = () => {
-
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
-  
+    fetchPosts(searchText);
+  }, [searchText]);
+
   const handleTagClick = async (tag) => {
     try {
-      console.log("test")
       const fetchFilteredPosts = await fetch(`/api/prompt/filter/${tag}`);
       const data = await fetchFilteredPosts.json();
       setPosts(data);
@@ -39,28 +35,20 @@ const Feed = () => {
     }
   }
 
-  const handleSearchChange = async (e) => {
+  const handleSearchChange = (e) => {
     e.preventDefault();
     const text = e.target.value;
     setSearchText(text);
-
-    if (text.trim() === '') {
-      fetchPosts();
-      return;
-    }
-
-    try {
-      const fetchFilteredPosts = await fetch(`/api/prompt/filter/${text}`);
-      const data = await fetchFilteredPosts.json();
-      setPosts(data);
-    } catch (error) {
-      console.error('Error fetching filtered posts:', error);
-    }
   };
 
-  const fetchPosts = async () => {
+  const fetchPosts = async (query = "") => {
     try {
-      const response = await fetch('/api/prompt');
+      let response;
+      if (query.trim() === '') {
+        response = await fetch('/api/prompt');
+      } else {
+        response = await fetch(`/api/prompt/filter/${query}`);
+      }
       const data = await response.json();
       setPosts(data);
     } catch (error) {
@@ -68,20 +56,24 @@ const Feed = () => {
     }
   };
 
-
-
   return (
     <section className="feed">
       <form className="relative w-full flex-center">
-        <input type="text" placeholder="Search for a tag or a username" value={searchText} onChange={handleSearchChange} className="search_input peer"/>
+        <input 
+          type="text" 
+          placeholder="Search for a tag or a username" 
+          value={searchText} 
+          onChange={handleSearchChange} 
+          className="search_input peer"
+        />
       </form>
 
       <PropmtCardList 
         data={posts}
-        handleTagClick = {handleTagClick}
+        handleTagClick={handleTagClick}
       />
     </section>
   )
 }
 
-export default Feed
+export default Feed;
