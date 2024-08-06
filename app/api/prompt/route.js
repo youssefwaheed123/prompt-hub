@@ -5,7 +5,8 @@ export const GET = async (req) => {
   try {
     await connectToDB();
 
-    const prompts = await Prompt.find().populate("creator");
+    const prompts = await Prompt.find().populate("creator").lean().exec();
+
     if (!prompts) return new Response("Prompts not found", { status: 404 });
 
     return new Response(JSON.stringify(prompts), {
