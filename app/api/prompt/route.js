@@ -4,7 +4,10 @@ import Prompt from "@models/prompt";
 export const GET = async (request) => {
   try {
     await connectToDB();
-    const prompts = await Prompt.find({}).populate("creator");
+
+    // Ensure that the connection is refreshed each time
+    const prompts = await Prompt.find({}).populate("creator").exec();
+    console.log("Fetched prompts:", prompts); // Debugging log
 
     return new Response(JSON.stringify(prompts), {
       status: 200,
@@ -15,6 +18,7 @@ export const GET = async (request) => {
       },
     });
   } catch (err) {
+    console.error("Error fetching prompts:", err); // Debugging log
     return new Response("Failed to fetch all prompts", { status: 500 });
   }
 };
