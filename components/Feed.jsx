@@ -22,18 +22,14 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
-  const fetchPosts = useCallback(async () => {
-    
-    try {
-      let response;
-      const trimmedSearchText = searchText.trim();
+ 
 
-      if (trimmedSearchText === "") {
-        response = await fetch("/api/prompt");
-        console.log(response.json())
-      } else {
-        response = await fetch(`/api/prompt/filter/${encodeURIComponent(trimmedSearchText)}`);
-      }
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await fetch("/api/prompt");
+        console.log(response)
+      
 
       console.log('Response status:', response.status);
 
@@ -46,13 +42,11 @@ const Feed = () => {
       setPosts(data);
     } catch (error) {
       console.error('Error fetching posts:', error);
-      alert('Failed to fetch posts. Please try again later.');
+      alert(`Failed to fetch postsssssss. ${error}`);
     }
-  }, [searchText, ]);
-
-  useEffect(() => {
+    }
     fetchPosts();
-  }, [fetchPosts]);
+  }, []);
 
   const handleTagClick = (tag) => {
     setSearchText(tag);
