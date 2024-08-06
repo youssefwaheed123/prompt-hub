@@ -31,6 +31,7 @@ const Feed = () => {
 
       if (trimmedSearchText === "") {
         response = await fetch("/api/prompt");
+        console.log(response.json())
       } else {
         response = await fetch(`/api/prompt/filter/${encodeURIComponent(trimmedSearchText)}`);
       }

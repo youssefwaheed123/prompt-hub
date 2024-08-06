@@ -9,6 +9,7 @@ export const GET = async (req) => {
 
     if (!prompts) return new Response("Prompts not found", { status: 404 });
 
+    console.log(JSON.stringify(prompts));
     return new Response(JSON.stringify(prompts), {
       status: 200,
     });
