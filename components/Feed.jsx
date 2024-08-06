@@ -1,13 +1,13 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react";
-import PromptCard from "./PromptCard";
+import PropmtCard from "./PropmtCard";
 
-const PromptCardList = ({ data, handleTagClick }) => {
+const PropmtCardList = ({ data, handleTagClick }) => {
   return (
     <div className="mt-16 prompt_layout">
       {data.map((post) => (
-        <PromptCard 
+        <PropmtCard 
           key={post._id}
           post={post}
           handleTagClick={handleTagClick}
@@ -20,29 +20,35 @@ const PromptCardList = ({ data, handleTagClick }) => {
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const fetchPosts = useCallback(async (query = "") => {
-    setIsLoading(true);
     try {
-      const response = await fetch(`/api/prompt?query=${encodeURIComponent(query.trim())}`);
+      let response;
+      if (query.trim() === '') {
+        response = await fetch('/api/prompt');
+      } else {
+        response = await fetch(`/api/prompt/filter/${query}`);
+      }
       const data = await response.json();
       setPosts(data);
     } catch (error) {
       console.error('Error fetching posts:', error);
-    } finally {
-      setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => fetchPosts(searchText), 500); // Debounce fetch
-    return () => clearTimeout(timeoutId);
+    fetchPosts(searchText);
   }, [searchText, fetchPosts]);
 
-  const handleTagClick = (tag) => {
-    setSearchText(tag); // Reuse the search input
-  };
+  const handleTagClick = async (tag) => {
+    try {
+      const fetchFilteredPosts = await fetch(`/api/prompt/filter/${tag}`);
+      const data = await fetchFilteredPosts.json();
+      setPosts(data);
+    } catch (error) {
+      console.error('Error fetching filtered posts:', error);
+    }
+  }
 
   const handleSearchChange = (e) => {
     e.preventDefault();
@@ -61,12 +67,10 @@ const Feed = () => {
         />
       </form>
 
-      {isLoading ? <p>Loading...</p> : (
-        <PromptCardList 
-          data={posts}
-          handleTagClick={handleTagClick}
-        />
-      )}
+      <PropmtCardList 
+        data={posts}
+        handleTagClick={handleTagClick}
+      />
     </section>
   )
 }
