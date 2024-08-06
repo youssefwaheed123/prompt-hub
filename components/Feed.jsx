@@ -24,7 +24,7 @@ const Feed = () => {
   const fetchPosts = useCallback(async () => {
     try {
       let response;
-      if (searchText.trim() === "") {
+      if (searchText.trim() ==="") {
         response = await fetch("/api/prompt");
       } else {
         response = await fetch(`/api/prompt/filter/${searchText}`);
