@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import PromptCard from "./PromptCard";
 
 const PromptCardList = ({ data, handleTagClick }) => {
@@ -21,30 +21,35 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch("/api/prompt");
-
-        console.log('Response status:', response.status);
-
-        if (!response.ok) {
-          throw new Error(`Network response was not ok, status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log('Fetched data:', data);
-        setPosts(data);
-      } catch (error) {
-        console.error('Error fetching posts:', error);
-        alert('Failed to fetch posts. Please try again later.');  // Inform the user of the error
+  const fetchPosts = useCallback(async () => {
+    try {
+      let response;
+      if (searchText === "") {
+        response = await fetch("/api/prompt");
+      } else {
+        response = await fetch(`/api/prompt/filter/${searchText}`);
       }
-    };
 
+      console.log('Response status:', response.status);
+
+      if (!response.ok) {
+        throw new Error(`Network response was not ok, status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Fetched data:', data);
+      setPosts(data);
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      alert('Failed to fetch posts. Please try again later.');
+    }
+  }, [searchText]);
+
+  useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [fetchPosts]);
 
-  const handleTagClick = async (tag) => {
+  const handleTagClick = (tag) => {
     setSearchText(tag);
   };
 

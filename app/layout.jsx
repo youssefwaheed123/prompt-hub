@@ -3,9 +3,12 @@ import Provider from '@components/Provider'
 import '@styles/globals.css'
 
 export const metadata = {
-    title: "PromptHub",
-    description: "Discover & Share AI Prompts"
-}
+    title: 'PromptHub',
+    description: 'Discover & Share AI Prompts',
+    icons: {
+      
+    }
+  }
 
 const RootLayout = ({children}) => {
   return (
