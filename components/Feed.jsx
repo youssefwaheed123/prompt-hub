@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
 import { useSession } from "next-auth/react";
+
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
     <div className="mt-16 prompt_layout">
@@ -18,23 +19,38 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
-  const {data: session} = useSession();
+  const { data: session } = useSession();
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
-        try {
-          const response = await fetch(`/api/prompt`);
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          const data = await response.json();
-          setPosts(data);
-        } catch (error) {
-          console.error('Error fetching posts:', error);
+      const endpoint = session?.user?.id 
+        ? `/api/users/${session.user.id}/posts` 
+        : `/api/prompt`;
+
+      console.log('Fetching posts from endpoint:', endpoint);
+
+      try {
+        const response = await fetch(endpoint, {
+          method: 'GET',
+          headers: {
+            'Cache-Control': 'no-cache',
+          },
+        });
+
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+          throw new Error(`Network response was not ok, status: ${response.status}`);
         }
-      
+
+        const data = await response.json();
+        console.log('Fetched data:', data);
+        setPosts(data);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+      }
     };
 
     fetchPosts();
