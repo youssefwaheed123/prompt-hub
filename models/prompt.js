@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
-const PromptSchema = new Schema({
+const PromptSchema = new mongoose.Schema({
   creator: {
-    type: Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
   prompt: {
