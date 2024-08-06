@@ -24,7 +24,7 @@ const Feed = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      console.log('Fetching posts from endpoint:', endpoint);
+    
 
       try {
         const response = await fetch('/api/prompt', {
