@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
-
+import { useSession } from "next-auth/react";
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
     <div className="mt-16 prompt_layout">
@@ -17,7 +17,8 @@ const PromptCardList = ({ data, handleTagClick }) => {
   );
 };
 
-const Feed = ({ session }) => {
+const Feed = () => {
+  const {data: session} = useSession();
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
