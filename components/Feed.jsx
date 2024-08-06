@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState, useCallback } from "react";
 import PromptCard from "./PromptCard";
 
@@ -24,10 +22,12 @@ const Feed = () => {
   const fetchPosts = useCallback(async () => {
     try {
       let response;
-      if (searchText.trim() ==="") {
+      const trimmedSearchText = searchText.trim();
+
+      if (trimmedSearchText === "") {
         response = await fetch("/api/prompt");
       } else {
-        response = await fetch(`/api/prompt/filter/${searchText}`);
+        response = await fetch(`/api/prompt/filter/${encodeURIComponent(trimmedSearchText)}`);
       }
 
       console.log('Response status:', response.status);
