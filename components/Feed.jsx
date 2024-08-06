@@ -27,14 +27,7 @@ const Feed = () => {
     
 
       try {
-        const response = await fetch('/api/prompt', {
-          method: 'GET',
-          headers: {
-            'Cache-Control': 'no-cache, no-store, must-revalidate',
-            'Pragma': 'no-cache',
-            'Expires': '0'
-          }
-        });
+        const response = await fetch('/api/prompt');
 
         console.log('Response status:', response.status);
 
