@@ -21,35 +21,14 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
-  const fetchPosts = useCallback(async (query = "") => {
-    try {
-      let response;
-      if (query.trim() === '') {
-        console.log("Fetching all posts");
-        response = await fetch(`/api/prompt?_=${Date.now()}`, {
-          cache: "no-store", // Ensure we bypass any potential cache issues
-        });
-      } else {
-        console.log(`Fetching posts with query: ${query}`);
-        response = await fetch(`/api/prompt/filter/${query}?_=${Date.now()}`, {
-          cache: "no-store",
-        });
-      }
-      if (!response.ok) {
-        throw new Error("Failed to fetch posts");
-      }
-      const data = await response.json();
-      console.log("Fetched posts:", data);
-      setPosts(data);
-    } catch (error) {
-      console.error('Error fetching posts:', error);
-      setPosts([]);  // Clear posts on error
-    }
-  }, []);
-
   useEffect(() => {
-    fetchPosts(searchText);
-  }, [searchText, fetchPosts]);
+    const fetchPosts = async () => {
+      const response = await fetch('/api/prompt');
+      const data = await response.json();
+      setPosts(data);
+    } 
+    fetchPosts();
+  }, [])
 
   const handleTagClick = async (tag) => {
     setSearchText(tag);
