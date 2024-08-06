@@ -24,9 +24,8 @@ const Feed = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      if (session?.user?.id) {
         try {
-          const response = await fetch(`/api/users/${session.user.id}/posts`);
+          const response = await fetch(`/api/prompt`);
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
@@ -35,7 +34,7 @@ const Feed = () => {
         } catch (error) {
           console.error('Error fetching posts:', error);
         }
-      }
+      
     };
 
     fetchPosts();
