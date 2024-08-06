@@ -18,20 +18,19 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
-
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
- 
+  const fetchPosts = useCallback(async () => {
+    try {
+      let response;
+      const trimmedSearchText = searchText.trim();
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await fetch("/api/prompt");
-        console.log(response)
-      
-
-      console.log('Response status:', response.status);
+      if (trimmedSearchText === "") {
+        response = await fetch("/api/prompt");
+      } else {
+        response = await fetch(`/api/prompt/filter/${encodeURIComponent(trimmedSearchText)}`);
+      }
 
       if (!response.ok) {
         throw new Error(`Network response was not ok, status: ${response.status}`);
@@ -42,11 +41,13 @@ const Feed = () => {
       setPosts(data);
     } catch (error) {
       console.error('Error fetching posts:', error);
-      alert(`Failed to fetch postsssssss. ${error}`);
+      alert('Failed to fetch posts. Please try again later.');
     }
-    }
+  }, [searchText]);
+
+  useEffect(() => {
     fetchPosts();
-  }, []);
+  }, [fetchPosts]);
 
   const handleTagClick = (tag) => {
     setSearchText(tag);
