@@ -26,12 +26,12 @@ const Feed = () => {
       let response;
       if (query.trim() === '') {
         console.log("Fetching all posts");
-        response = await fetch(`/api/prompt?_=${Date.now()}`, {
+        response = await fetch(`/api/prompt`, {
           cache: "no-store", // Ensure we bypass any potential cache issues
         });
       } else {
         console.log(`Fetching posts with query: ${query}`);
-        response = await fetch(`/api/prompt/filter/${query}?_=${Date.now()}`, {
+        response = await fetch(`/api/prompt/filter/${searchText}`, {
           cache: "no-store",
         });
       }
@@ -49,7 +49,7 @@ const Feed = () => {
 
   useEffect(() => {
     fetchPosts(searchText);
-  }, [searchText, fetchPosts]);
+  }, [searchText, posts]);
 
   const handleTagClick = async (tag) => {
     setSearchText(tag);
