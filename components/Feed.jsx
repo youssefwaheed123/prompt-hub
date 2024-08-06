@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect, useState, useCallback } from "react";
 import PropmtCard from "./PropmtCard";
@@ -25,14 +25,25 @@ const Feed = () => {
     try {
       let response;
       if (query.trim() === '') {
-        response = await fetch('/api/prompt');
+        console.log("Fetching all posts");
+        response = await fetch(`/api/prompt?_=${Date.now()}`, {
+          cache: "no-store", // Ensure we bypass any potential cache issues
+        });
       } else {
-        response = await fetch(`/api/prompt/filter/${query}`);
+        console.log(`Fetching posts with query: ${query}`);
+        response = await fetch(`/api/prompt/filter/${query}?_=${Date.now()}`, {
+          cache: "no-store",
+        });
+      }
+      if (!response.ok) {
+        throw new Error("Failed to fetch posts");
       }
       const data = await response.json();
+      console.log("Fetched posts:", data);
       setPosts(data);
     } catch (error) {
       console.error('Error fetching posts:', error);
+      setPosts([]);  // Clear posts on error
     }
   }, []);
 
@@ -41,13 +52,7 @@ const Feed = () => {
   }, [searchText, fetchPosts]);
 
   const handleTagClick = async (tag) => {
-    try {
-      const fetchFilteredPosts = await fetch(`/api/prompt/filter/${tag}`);
-      const data = await fetchFilteredPosts.json();
-      setPosts(data);
-    } catch (error) {
-      console.error('Error fetching filtered posts:', error);
-    }
+    setSearchText(tag);
   }
 
   const handleSearchChange = (e) => {
