@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
 
-
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
     <div className="mt-16 prompt_layout">
@@ -38,6 +37,7 @@ const Feed = () => {
         setPosts(data);
       } catch (error) {
         console.error('Error fetching posts:', error);
+        alert('Failed to fetch posts. Please try again later.');  // Inform the user of the error
       }
     };
 
