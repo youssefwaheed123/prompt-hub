@@ -30,6 +30,7 @@ const Feed = () => {
     fetchPosts();
   }, [])
 
+
   const handleTagClick = async (tag) => {
     setSearchText(tag);
   }
