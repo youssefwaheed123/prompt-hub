@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react";
-import { useSession } from "next-auth/react";
 import PromptCard from "./PromptCard";
 
 const PromptCardList = ({ data, handleTagClick }) => {
@@ -19,12 +18,12 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
-  const {data: session} = useSession();
+
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
   const fetchPosts = useCallback(async () => {
-    if(session?.user.id){
+    
     try {
       let response;
       const trimmedSearchText = searchText.trim();
@@ -48,8 +47,8 @@ const Feed = () => {
     } catch (error) {
       console.error('Error fetching posts:', error);
       alert('Failed to fetch posts. Please try again later.');
-    }}
-  }, [searchText, session]);
+    }
+  }, [searchText, ]);
 
   useEffect(() => {
     fetchPosts();
