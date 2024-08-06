@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import PromptCard from "./PromptCard";
-import { useSession } from "next-auth/react";
+
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
@@ -19,24 +19,21 @@ const PromptCardList = ({ data, handleTagClick }) => {
 };
 
 const Feed = () => {
-  const { data: session } = useSession();
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const endpoint = session?.user?.id 
-        ? `/api/users/${session.user.id}/posts` 
-        : `/api/prompt`;
-
       console.log('Fetching posts from endpoint:', endpoint);
 
       try {
-        const response = await fetch(endpoint, {
+        const response = await fetch('/api/prompt', {
           method: 'GET',
           headers: {
-            'Cache-Control': 'no-cache',
-          },
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+          }
         });
 
         console.log('Response status:', response.status);
@@ -54,7 +51,7 @@ const Feed = () => {
     };
 
     fetchPosts();
-  }, [session]);
+  }, []);
 
   const handleTagClick = async (tag) => {
     setSearchText(tag);
