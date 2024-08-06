@@ -1,4 +1,4 @@
-import PropmtCard from "./PropmtCard"
+import PropmtCard from "./PromptCard"
 
 const Profile = (props) => {
   const {name, desc, data, handleEdit, handleDelete} = props;

@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import PropmtCard from "./PropmtCard";
+import PropmtCard from "./PromptCard";
 
-const PropmtCardList = ({ data, handleTagClick }) => {
+const PromptCardList = ({ data, handleTagClick }) => {
   return (
     <div className="mt-16 prompt_layout">
       {data.map((post) => (
@@ -23,7 +23,12 @@ const Feed = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch('/api/prompt');
+      const response = await fetch('/api/prompt', {
+        method: 'GET',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
       const data = await response.json();
       setPosts(data);
     } 
@@ -52,7 +57,7 @@ const Feed = () => {
         />
       </form>
 
-      <PropmtCardList
+      <PromptCardList
         data={posts}
         handleTagClick={handleTagClick}
       />
