@@ -1,44 +1,48 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
-import PropmtCard from "./PromptCard";
+import { useEffect, useState } from "react";
+import PromptCard from "./PromptCard";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
     <div className="mt-16 prompt_layout">
       {data.map((post) => (
-        <PropmtCard
+        <PromptCard
           key={post._id}
           post={post}
           handleTagClick={handleTagClick}
         />
       ))}
     </div>
-  )
-}
+  );
+};
 
-const Feed = () => {
+const Feed = ({ session }) => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const response = await fetch('/api/prompt', {
-        method: 'GET',
-        headers: {
-          'Cache-Control': 'no-cache'
+      if (session?.user?.id) {
+        try {
+          const response = await fetch(`/api/users/${session.user.id}/posts`);
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          const data = await response.json();
+          setPosts(data);
+        } catch (error) {
+          console.error('Error fetching posts:', error);
         }
-      });
-      const data = await response.json();
-      setPosts(data);
-    } 
-    fetchPosts();
-  }, [])
+      }
+    };
 
+    fetchPosts();
+  }, [session]);
 
   const handleTagClick = async (tag) => {
     setSearchText(tag);
-  }
+  };
 
   const handleSearchChange = (e) => {
     e.preventDefault();
@@ -57,12 +61,9 @@ const Feed = () => {
         />
       </form>
 
-      <PromptCardList
-        data={posts}
-        handleTagClick={handleTagClick}
-      />
+      <PromptCardList data={posts} handleTagClick={handleTagClick} />
     </section>
-  )
-}
+  );
+};
 
 export default Feed;
