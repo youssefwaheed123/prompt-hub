@@ -29,7 +29,7 @@ PromptHub is a community-driven platform where users can share and discover crea
 ### ⚙️ Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/youssefwaheed123/prompt-hub.git
+   git clone https://github.com/youssefwaheedd/prompt-hub.git
 2. Navigate to the project directory:
    ```bash
    cd prompt-hub
@@ -54,7 +54,7 @@ Open http://localhost:3000 with your browser to see the app in action.
 This project uses Next.js API Routes for backend functionality. These routes are located in the /pages/api directory and handle tasks such as data fetching and interacting with the MongoDB database.
 
 ### Deployment
-The project is ready for deployment on Netflify or other hosting services that support Next.js. For a production build:
+The project is ready for deployment on Netlify or other hosting services that support Next.js. For a production build:
 
    ```bash
    npm run build
