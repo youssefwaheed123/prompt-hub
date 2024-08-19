@@ -49,8 +49,7 @@ const Feed = () => {
       const data = await response.json();
       setPosts(data);
     } catch (error) {
-      console.error("Error fetching posts:", error);
-      alert("Failed to fetch posts. Please try again later.");
+      console.log("Error fetching posts:", error);
     } finally {
       setLoading(false);
     }
