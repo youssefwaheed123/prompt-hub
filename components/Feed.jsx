@@ -1,9 +1,13 @@
-"use client"
+"use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import PromptCard from "./PromptCard";
 
 const PromptCardList = ({ data, handleTagClick }) => {
+  if (!data.length) {
+    return <p className="mt-10 text-md">No posts found</p>;
+  }
+
   return (
     <div className="mt-16 prompt_layout">
       {data.map((post) => (
@@ -20,8 +24,10 @@ const PromptCardList = ({ data, handleTagClick }) => {
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchPosts = useCallback(async () => {
+    setLoading(true);
     try {
       let response;
       const trimmedSearchText = searchText.trim();
@@ -29,19 +35,24 @@ const Feed = () => {
       if (trimmedSearchText === "") {
         response = await fetch("/api/prompt");
       } else {
-        response = await fetch(`/api/prompt/filter/${encodeURIComponent(trimmedSearchText)}`);
+        response = await fetch(
+          `/api/prompt/filter/${encodeURIComponent(trimmedSearchText)}`
+        );
       }
 
       if (!response.ok) {
-        throw new Error(`Network response was not ok, status: ${response.status}`);
+        throw new Error(
+          `Network response was not ok, status: ${response.status}`
+        );
       }
 
       const data = await response.json();
-      console.log('Fetched data:', data);
       setPosts(data);
     } catch (error) {
-      console.error('Error fetching posts:', error);
-      alert('Failed to fetch posts. Please try again later.');
+      console.error("Error fetching posts:", error);
+      alert("Failed to fetch posts. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   }, [searchText]);
 
@@ -49,14 +60,17 @@ const Feed = () => {
     fetchPosts();
   }, [fetchPosts]);
 
-  const handleTagClick = (tag) => {
-    setSearchText(tag);
-  };
+  const handleTagClick = useMemo(
+    () => (tag) => {
+      setSearchText(tag);
+    },
+    []
+  );
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = useCallback((e) => {
     e.preventDefault();
     setSearchText(e.target.value);
-  };
+  }, []);
 
   return (
     <section className="feed">
@@ -70,7 +84,11 @@ const Feed = () => {
         />
       </form>
 
-      <PromptCardList data={posts} handleTagClick={handleTagClick} />
+      {loading ? (
+        <p className="text-lg text center mt-32">Loading posts...</p>
+      ) : (
+        <PromptCardList data={posts} handleTagClick={handleTagClick} />
+      )}
     </section>
   );
 };
